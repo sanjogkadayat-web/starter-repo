@@ -1,0 +1,102 @@
+[
+  {
+    "name": "API-TIMEOUT",
+    "severity": "medium",
+    "category": "external-dependency",
+    "trigger_condition": "LLM or external API call exceeds timeout threshold",
+    "impact": "Process hangs or fails silently; partial output may be returned without warning",
+    "mitigation": "Add retry logic with exponential backoff; set explicit timeout with fallback behaviour",
+    "risk_level": "🟡 Medium",
+    "detection_signals": ["api", "llm", "openai", "request", "call", "endpoint", "fetch"]
+  },
+  {
+    "name": "CONTEXT-OVERFLOW",
+    "severity": "critical",
+    "category": "input-integrity",
+    "trigger_condition": "Input exceeds token limit of the processing context (e.g., transcript > 50k tokens)",
+    "impact": "AI truncates input without warning; loses context from the end of the document",
+    "mitigation": "Chunk input before processing; validate total token count; use chunked handoff pattern",
+    "risk_level": "🔴 High",
+    "detection_signals": ["transcript", "document", "token", "context", "chunk", "large", "long"]
+  },
+  {
+    "name": "FORMAT-MISMATCH",
+    "severity": "critical",
+    "category": "integration-failure",
+    "trigger_condition": "Skill A output format does not match Skill B expected input format",
+    "impact": "Integration fails at handoff; data loss or corruption; downstream skill crashes or produces garbage",
+    "mitigation": "Validate output against interface schema before handoff; add format assertion at each boundary",
+    "risk_level": "🔴 High",
+    "detection_signals": ["handoff", "output", "input", "format", "schema", "json", "interface", "pipe"]
+  },
+  {
+    "name": "MISSING-FALLBACK",
+    "severity": "medium",
+    "category": "logic-completeness",
+    "trigger_condition": "Primary logic path fails with no alternative or graceful degradation defined",
+    "impact": "Process crashes or returns empty result; user gets no useful feedback",
+    "mitigation": "Add explicit fallback logic for critical paths; emit clear error messages on failure",
+    "risk_level": "🟡 Medium",
+    "detection_signals": ["fallback", "else", "default", "error", "fail", "exception", "missing"]
+  },
+  {
+    "name": "SILENT-FAILURE",
+    "severity": "critical",
+    "category": "observability",
+    "trigger_condition": "Error occurs but no logging, alert, or output signal is produced",
+    "impact": "Bug goes undetected; corrupted or incomplete output appears valid",
+    "mitigation": "Add explicit error logging at each processing stage; validate output before returning",
+    "risk_level": "🔴 High",
+    "detection_signals": ["error", "log", "warning", "silent", "catch", "except", "try"]
+  },
+  {
+    "name": "STALE-DEPENDENCY",
+    "severity": "medium",
+    "category": "dependency-failure",
+    "trigger_condition": "A referenced config file, asset, or upstream output is outdated or from a previous run",
+    "impact": "Decisions are made on stale data; output does not reflect current state",
+    "mitigation": "Check file modification timestamps; add freshness validation before processing",
+    "risk_level": "🟡 Medium",
+    "detection_signals": ["config", "asset", "cache", "previous", "last", "stored", "saved"]
+  },
+  {
+    "name": "SCOPE-CREEP-INPUT",
+    "severity": "medium",
+    "category": "input-integrity",
+    "trigger_condition": "User provides input outside the skill's designed domain (e.g., video file to a text-only skill)",
+    "impact": "Skill attempts to process out-of-scope input; produces nonsensical output or crashes",
+    "mitigation": "Add input validation at Step 1; reject unsupported formats with a clear message",
+    "risk_level": "🟡 Medium",
+    "detection_signals": ["input", "file", "format", "type", "support", "accept", "valid"]
+  },
+  {
+    "name": "RACE-CONDITION",
+    "severity": "high",
+    "category": "concurrency",
+    "trigger_condition": "Two skills or processes read/write the same file concurrently",
+    "impact": "File corruption; one process overwrites another's output; non-deterministic results",
+    "mitigation": "Use unique output paths per run; add file locking or sequential execution guarantees",
+    "risk_level": "🔴 High",
+    "detection_signals": ["concurrent", "parallel", "shared", "write", "output", "overwrite", "lock"]
+  },
+  {
+    "name": "ENCODING-CORRUPTION",
+    "severity": "medium",
+    "category": "input-integrity",
+    "trigger_condition": "Input file contains mojibake, mixed encodings, or non-UTF-8 characters",
+    "impact": "Pattern matching fails; word counts are wrong; structured parsers break at corrupted boundaries",
+    "mitigation": "Detect encoding at load time; normalize to UTF-8 before processing",
+    "risk_level": "🟡 Medium",
+    "detection_signals": ["encoding", "utf", "text", "read", "parse", "character"]
+  },
+  {
+    "name": "EMPTY-OR-TRIVIAL-INPUT",
+    "severity": "high",
+    "category": "input-integrity",
+    "trigger_condition": "Input file exists but contains too little content for meaningful processing",
+    "impact": "Skill returns zero or vacuous results that appear complete; user trusts empty output",
+    "mitigation": "Check content length at load; abort early with a clear message if below minimum threshold",
+    "risk_level": "🔴 High",
+    "detection_signals": ["empty", "minimum", "threshold", "length", "count", "content"]
+  }
+]
